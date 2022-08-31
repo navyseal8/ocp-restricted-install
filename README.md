@@ -1,13 +1,13 @@
 # ocp-restricted-install
 
 
-## Download installer program
+## 1. Download installer program
 
 Download latest installer from https://console.redhat.com/openshift/install
 
 $ tar -xvf openshift-install-linux.tar.gz 
 
-## Download your pull-secret
+## 1. Download your pull-secret
 
 Download your pull-secret - https://console.redhat.com/openshift/install/pull-secret
 
@@ -18,7 +18,7 @@ $ ssh-keygen -t ed25519 -N '' -f <path>/<file_name>. (or RSA)
 $ eval "$(ssh-agent -s)"
 ```
 
-## Deploying the cluster
+## 1. Deploying the cluster
 
 Ensure the directory to store the files has "execute" permission
 
@@ -43,7 +43,7 @@ $ ./openshift-install create cluster --dir $HOME/mas-install --log-level=debug
 
 ```
 
-## Login to the cluster
+## 1. Login to the cluster
 
 ```
 $ export KUBECONFIG=$HOME/mas-install/auth/kubeconfig

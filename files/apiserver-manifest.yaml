@@ -1,0 +1,12 @@
+apiVersion: config.openshift.io/v1
+kind: APIServer
+spec:
+  audit:
+    profile: Default
+    customRules:                        
+    - group: system:authenticated:oauth
+      profile: WriteRequestBodies
+    - group: system:unauthenticated
+      profile: AllRequestBodies
+  encryption:
+    type: aescbc 

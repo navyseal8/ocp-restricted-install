@@ -1,14 +1,15 @@
 apiVersion: v1
-baseDomain: example.com 
-credentialsMode: Mint 
+baseDomain: mas-dev.iz.gov.sg
+credentialsMode: Manual 
 controlPlane:   
   hyperthreading: Enabled 
   name: master
   platform:
     aws:
       zones:
-      - us-west-2a
-      - us-west-2b
+      - ap-southeast-1a
+      - ap-southeast-1b
+      - ap-southeast-1c
       rootVolume:
         iops: 4000
         size: 500
@@ -26,34 +27,36 @@ compute:
         type: io1 
       type: c5.4xlarge
       zones:
-      - us-west-2c
+      - ap-southeast-1a
+      - ap-southeast-1b
+      - ap-southeast-1c
   replicas: 3
 metadata:
-  name: test-cluster 
+  name: TO-BE-DECIDED
 networking:
   clusterNetwork:
-  - cidr: 10.128.0.0/14
+  - cidr: 172.31.64.0/18
     hostPrefix: 23
   machineNetwork:
-  - cidr: 10.0.0.0/16
+  - cidr: 100.120.105.0/24
   networkType: OpenShiftSDN
   serviceNetwork:
-  - 172.30.0.0/16
+  - 172.32.144.0/20
 platform:
   aws:
     region: ap-southeast-1 
     userTags:
-      adminContact: jdoe
-      costCenter: 7536
+      adminContact: <TO_BE_FILLED>
+      costCenter: <TO_BE_FILLED>
     subnets: 
     - subnet-1
     - subnet-2
     - subnet-3
-    amiID: ami-96c6f8f7 
+    amiID: ami-<TO_BE_FILLED>
     serviceEndpoints: 
       - name: ec2
-        url: https://vpce-id.ec2.us-west-2.vpce.amazonaws.com
-    hostedZone: Z3URY6TWQ91KVV 
+        url: https://ec2.ap-southeast-1.amazonaws.com
+    hostedZone: <TO_BE_FILLED> Z3URY6TWQ91KVV 
 fips: false 
 sshKey: ssh-ed25519 AAAA... 
 pullSecret: '{"auths":{"<local_registry>": {"auth": "<credentials>","email": "you@example.com"}}}' 

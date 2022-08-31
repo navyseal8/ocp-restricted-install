@@ -12,7 +12,7 @@ controlPlane:
       - ap-southeast-1c
       rootVolume:
         iops: 4000
-        size: 500
+        size: 120
         type: io1 
       type: m5.xlarge
   replicas: 3
@@ -23,9 +23,9 @@ compute:
     aws:
       rootVolume:
         iops: 2000
-        size: 500
+        size: 120
         type: io1 
-      type: c5.4xlarge
+      type: c5.2xlarge
       zones:
       - ap-southeast-1a
       - ap-southeast-1b

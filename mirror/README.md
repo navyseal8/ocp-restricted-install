@@ -8,7 +8,21 @@
 
 ## Standup a registry v2
 ```
-  $ podman run -d -p 5000:5000 --restart=always --name registry registry:2
+  $ mkdir auth
+  $ podman run \
+     --entrypoint htpasswd \
+     httpd:2 -Bbn testuser testpassword > auth/htpasswd
+
+  $ podman run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v "$(pwd)"/auth:/auth \
+  -v /mnt/registry:/var/lib/registry \
+  -e "REGISTRY_AUTH=htpasswd" \
+  -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+  registry:2
 ```
 
 ## Setup your registry passwd, and generate base64 user/passwd

@@ -4,8 +4,6 @@ spec:
   audit:
     profile: Default
     customRules:                        
-    - group: system:authenticated:oauth
-      profile: WriteRequestBodies
     - group: system:unauthenticated
       profile: AllRequestBodies
   encryption:

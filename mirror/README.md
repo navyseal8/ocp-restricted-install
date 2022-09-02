@@ -13,6 +13,9 @@
      --entrypoint htpasswd \
      httpd:2 -Bbn testuser testpassword > auth/htpasswd
 
+  $ semanage fcontext -a -t container_file_t '/mnt/registry(/.*)?'
+  $ restorecon -r /mnt/registry
+
   $ podman run -d \
   -p 5000:5000 \
   --restart=always \

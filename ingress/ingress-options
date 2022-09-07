@@ -1,0 +1,12 @@
+https://docs.openshift.com/container-platform/4.11/networking/ingress-operator.html
+
+namespaceSelector
+routeSelector
+nodePlacement
+
+defaultCertificate
+clientTLS
+routeAdmission
+IngressControllerLogging
+httpHeaders
+tuningOptions

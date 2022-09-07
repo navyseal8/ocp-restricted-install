@@ -1,0 +1,21 @@
+apiVersion: v1
+items:
+- apiVersion: operator.openshift.io/v1
+  kind: IngressController
+  metadata:
+    name: appsA-sharded
+    namespace: openshift-ingress-operator
+  spec:
+    domain: <apps-sharded.basedomain.example.net>
+    nodePlacement:
+      nodeSelector:
+        matchLabels:
+          node-role.kubernetes.io/infra: ""
+    routeSelector:
+      matchLabels:
+        type: <sharded>
+  status: {}
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

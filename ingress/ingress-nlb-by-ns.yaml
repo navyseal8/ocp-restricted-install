@@ -1,0 +1,23 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: <apps-sharded-by-namespace>
+  namespace: openshift-ingress-operator
+spec:
+  domain: 
+  domain: <apps-sharded.basedomain.example.net>
+  nodePlacement:
+    nodeSelector:
+      matchLabels:
+        node-role.kubernetes.io/infra: ""
+  namespaceSelector:
+    matchLabels:
+      type: <sharded>
+  endpointPublishingStrategy:
+    type: LoadBalancerService
+    loadBalancer:
+      scope: External
+      providerParameters:
+        type: AWS
+        aws:
+          type: NLB

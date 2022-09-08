@@ -1,0 +1,7 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: ldapsync-sa
+  namespace: ldap-groupsync
+  labels:
+    app: ldap-groupsync

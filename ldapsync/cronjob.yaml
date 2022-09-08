@@ -29,5 +29,5 @@ spec:
             - name: "ldap-bind-password"
               secret:
                 secretName: ldap-secret
-          serviceAccountName: ldap-group-syncer-sa
-          serviceAccount: ldap-group-syncer-sa
+          serviceAccountName: ldapsync-sa
+          serviceAccount: ldapsync-sa

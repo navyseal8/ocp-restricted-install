@@ -1,0 +1,14 @@
+apiVersion: quay.redhat.com/v1
+kind: QuayRegistry
+metadata:
+  name: xxxxx  <--- end up as <name>.quay.registry.<basedomain>
+  namespace: registry
+spec:
+  configBundleSecret: init-config-bundle-secret
+  components:
+    - kind: clair
+      managed: false  <----- need scanning ?
+    - kind: horizontalpodautoscaler
+      managed: false  <---- decide
+    - kind: mirror
+      managed: false  <---- decide

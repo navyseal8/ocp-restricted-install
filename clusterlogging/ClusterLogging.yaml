@@ -16,6 +16,8 @@ spec:
         maxAge: 7d
     elasticsearch:
       nodeCount: 3 
+      nodeSelector:
+        node-role.kubernetes.io/infra: ''
       storage:
         storageClassName: "<storage_class_name>" 
         size: 200G
@@ -34,6 +36,8 @@ spec:
   visualization:
     type: "kibana"  
     kibana:
+    nodeSelector:
+        node-role.kubernetes.io/infra: ''
       replicas: 1
   collection:
     logs:

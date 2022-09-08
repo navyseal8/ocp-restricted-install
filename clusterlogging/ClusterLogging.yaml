@@ -18,6 +18,11 @@ spec:
       nodeCount: 3 
       nodeSelector:
         node-role.kubernetes.io/infra: ''
+      tolerations:
+      - key: "logging"
+        operator: "Exists"
+        effect: "NoSchedule"
+        tolerationSeconds: 6000
       storage:
         storageClassName: "<storage_class_name>" 
         size: 200G
@@ -36,8 +41,13 @@ spec:
   visualization:
     type: "kibana"  
     kibana:
-    nodeSelector:
+      nodeSelector:
         node-role.kubernetes.io/infra: ''
+      tolerations:
+      - key: "logging"
+        operator: "Exists"
+        effect: "NoSchedule"
+        tolerationSeconds: 6000
       replicas: 1
   collection:
     logs:

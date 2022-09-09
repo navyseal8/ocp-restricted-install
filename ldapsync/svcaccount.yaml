@@ -5,3 +5,36 @@ metadata:
   namespace: ldap-groupsync
   labels:
     app: ldap-groupsync
+---
+apiVersion: rbac.authorization.k8s.io/v1
+  kind: ClusterRole
+  metadata:
+    name: ldap-groupsync-role
+    labels:
+      app: ldap-groupsync-role
+  rules:
+    - apiGroups:
+        - ''
+        - user.openshift.io
+       resources:
+        - groups
+      verbs:
+        - get
+        - list
+        - create
+        - update
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ldap-groupsync-rolebinding
+  labels:
+    app: ldap-groupsync
+subjects:
+  - kind: ServiceAccount
+    name: ldapsync-sa
+    namespace: ldap-groupsync
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ldap-groupsync-role

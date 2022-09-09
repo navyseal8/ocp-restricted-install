@@ -1,0 +1,24 @@
+
+
+- Automatically assign egress IP for a namespace
+  Step 1
+  oc patch netnamespace <project_name> --type=merge -p '{ "egressIPs": [ "<ip_address>" ] }'
+  oc patch netnamespace project1 --type=merge -p '{"egressIPs": ["192.168.1.100"]}' 
+  oc patch netnamespace project2 --type=merge -p '{"egressIPs": ["192.168.1.101"]}'
+
+  Step 2
+  Indicate which nodes can host egress IP addresses by setting the egressCIDRs parameter for each host using the following JSON:
+  oc patch hostsubnet node1 --type=merge -p '{"egressCIDRs": ["192.168.1.0/24"]}' 
+  oc patch hostsubnet node2 --type=merge -p '{"egressCIDRs": ["192.168.1.0/24"]}'
+
+
+- Manually assign egress IP for a namespace
+  Step1
+  oc patch netnamespace project1 --type=merge -p '{"egressIPs": ["192.168.1.100","192.168.1.101"]}'
+
+  Step2
+  Manually assign pool of egress ips to Node host
+  oc patch hostsubnet node1 --type=merge -p '{"egressIPs": ["192.168.1.100", "192.168.1.101", "192.168.1.102"]}'
+  oc patch hostsubnet node2 --type=merge -p '{"egressIPs": ["192.168.1.100", "192.168.1.101", "192.168.1.102"]}'
+  oc patch hostsubnet node3 --type=merge -p '{"egressIPs": ["192.168.1.100", "192.168.1.101", "192.168.1.102"]}'
+

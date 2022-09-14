@@ -14,10 +14,9 @@ data:
           resources:
             requests:
               storage: 40Gi
+      retention: 24h
+      retentionSize: 200GB
     prometheusOperator:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    prometheusK8s:
       nodeSelector:
         nodename: role-kubernetes.io/infra
     alertmanagerMain:

@@ -10,7 +10,7 @@ data:
         nodename: role-kubernetes.io/infra
       volumeClaimTemplate:
         spec:
-          storageClassName: local-storage (or any storageClass you setup. In MAS case, we use csi-ebs-io1)
+          storageClassName: local-storage (csi-ebs-io1)
           resources:
             requests:
               storage: 40Gi

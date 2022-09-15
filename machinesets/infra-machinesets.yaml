@@ -23,8 +23,9 @@ spec:
         labels:
           node-role.kubernetes.io/infra: "" 
       taints: 
-        - key: node-role.kubernetes.io/infra
-          effect: NoSchedule
+        - key: "node-role.kubernetes.io/infra"
+          operator: "Exist"
+          effect: "NoExecute"
       providerSpec:
         value:
           ami:

@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: example-routing
+  namespace: ns2
+spec:
+  route:
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h
+    receiver: 'null'
+    route:
+    - receiver: 'aws-ses'
+      matchers:
+      - alertname = 'ns2AppsCount'
+    - receiver: 'aws-sns'
+      matchers:
+      - severity = 'warning'
+  receivers:
+    - name: 'null'
+    - name: 'aws-sns'
+      sns_configs:
+      - topic_arn: arn:aws:sns:ap-southeast-1:xxxxxx:xxxxxx-mas
+        sigv4:
+          region: ap-southeast-1
+        attributes:
+          key: severity
+          value: SEV2
+    - name: 'aws-ses'
+      email_configs:
+      - to: "xxxx@example.com"
+        from: "xxxx@example.com"
+        smarthost: "email-smtp.ap-southeast-1.amazonaws.com:587"
+        auth_username: "xxxxx"
+        auth_password: "xxxxx"
+        authIdentity: "xxxx@example.com"
+        send_resolved: true
+        require_tls: true
+        severity: warning

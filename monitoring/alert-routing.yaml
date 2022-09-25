@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1beta1
+kind: AlertmanagerConfig
+metadata:
+  name: example-routing
+  namespace: ns2
+  labels:
+    alertmanagerConfig: example
+spec:
+  route:
+    receiver: email
+    groupBy: 
+    - alertname
+    - job
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+  receivers:
+  - name: "email"
+    email_configs:
+    - send_resolved: true
+      to: "xxxx@example.com"
+      from: "xxxx@example.com"
+      smarthost: "email-smtp.ap-southeast-1.amazonaws.com:587"
+      auth_username: "xxxxx"
+      auth_password: "xxxxx"
+      authIdentity: "xxx@example.com"
+      require_tls: true
+      severity: warning

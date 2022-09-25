@@ -1,0 +1,141 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: mas-backup-operator
+  namespace: mas-etcd-backup
+  labels:
+    app.kubernetes.io/name: mas-etcd-backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cronjob-etcd-backup
+  labels:
+    app.kubernetes.io/name: cronjob-etcd-backup
+rules:
+  - verbs:
+    - use
+    apiGroups:
+    - security.openshift.io
+    resources:
+    - securitycontextconstraints
+    resourceNames:
+    - privileged
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cronjob-etcd-backup
+  labels:
+    app.kubernetes.io/name: cronjob-etcd-backup
+subjects:
+  - kind: ServiceAccount
+    name: mas-backup-operator
+    namespace: mas-etcd-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cronjob-etcd-backup
+---
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: etcd-backup
+  namespace: mas-etcd-backup
+  labels:
+    app.kubernetes.io/name: cronjob-etcd-backup
+spec:
+  schedule: "* 12 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cronjob-etcd-backup
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: cronjob-etcd-backup
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/master: ''
+          restartPolicy: Never
+          activeDeadlineSeconds: 500
+          serviceAccount: mas-backup-operator
+          serviceAccountName: mas-backup-operator
+          hostPID: true
+          hostNetwork: true
+          enableServiceLinks: true
+          schedulerName: default-scheduler
+          terminationGracePeriodSeconds: 30
+          securityContext: {}
+          containers:
+            - name: cronjob-etcd-backup
+              image: registry.redhat.io/openshift4/ose-cli
+              terminationMessagePath: /dev/termination-log
+              command:
+              - /bin/bash
+              - '-c'
+              - >-
+                echo -e '\n\n---\nCreate etcd backup local to master\n' &&
+                chroot /host /usr/local/bin/cluster-backup.sh /home/core/backup/$(date "+%F_%H%M%S") &&
+                echo -e '\n\n---\nCleanup old local etcd backups\n'
+              securityContext:
+                privileged: true
+                runAsUser: 0
+                capabilities:
+                  add:
+                    - SYS_CHROOT
+              imagePullPolicy: Always
+              volumeMounts:
+                - name: host
+                  mountPath: /host
+              terminationMessagePolicy: File
+            - name: aws-cli
+              image: docker.io/amazon/aws-cli:latest
+              command:
+              - /bin/bash
+              - '-c'
+              - >-
+                echo -e '\n\n---\nConfiguring aws credentials \n' &&
+                mkdir /root/.aws &&
+                cat /var/run/secrets/cloud/credentials > /root/.aws/config &&
+                sleep 60 &&
+                echo -e '\n\n---\nStarting s3 copy\n' &&
+                while true; do if [[  $(find /host/home/core/backup/ -type d -cmin -1 | wc -c) -ne 0 ]]; then aws s3 cp /host/home/core/backup/ s3://jeretan-rosa --recursive; break; fi; done
+              env:
+              - name: AWS_ROLE_SESSION_NAME
+                value: manual-sts
+              - name: AWS_REGION
+                value: ap-southeast-2
+              volumeMounts:
+              - mountPath: /var/run/secrets/cloud
+                name: manual-sts
+              - mountPath: /var/run/secrets/openshift/serviceaccount
+                name: aws-iam-token
+                readOnly: true
+          volumes:
+          - name: manual-sts
+            secret:
+              defaultMode: 420
+              optional: false
+              secretName: etcd-backup-cred
+          - name: aws-iam-token
+            projected:
+              defaultMode: 420
+              sources:
+              - serviceAccountToken:
+                  audience: openshift
+                  expiration: 86400
+                  path: token
+          - name: host
+            hostPath:
+              path: /
+              type: Directory
+          dnsPolicy: ClusterFirst
+          tolerations:
+          - key: node-role.kubernetes.io/master
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5

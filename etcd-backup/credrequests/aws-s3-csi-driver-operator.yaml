@@ -9,10 +9,15 @@ spec:
     kind: AWSProviderSpec
     statementEntries:
     - action:
-      - s3:*
-      - iam:PassRole
+      - s3:ListBucket
       effect: Allow
-      resource: "arn:aws:s3:::<your-bucket>"
+      resource: "arn:aws:s3:::jeretan-rosa"
+    - action:
+      - s3:PutObject
+      - s3:GetObject
+      - s3:DeleteObject
+      effect: Allow
+      resource: "arn:aws:s3:::jeretan-rosa/*"
   secretRef:
     name: etcd-backup-cred
     namespace: mas-etcd-backup

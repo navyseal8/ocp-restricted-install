@@ -4,7 +4,6 @@ metadata:
   name: mas-team1
   namespace: ns2
   labels:
-    openshift.io/prometheus-rule-evaluation-scope: leaf-prometheus
     prometheus: k8s
     role: alert-rules
 spec:
@@ -14,13 +13,12 @@ spec:
     # Alert for team1 application high threshold for >1 minutes.
     # expr: count(http_request_duration_seconds_count{job="prometheus-example-app", code="200"}) > 20
     - alert: ns2AppsCount
-      expr: http_request_duration_seconds_count > 45
+      expr: http_request_duration_seconds_count > 10
       for: 1m
       labels:
-        severity: warning
+        app: prometheus-example-app
       annotations:
         summary: High http count
-
     # Alert for any instance that is unreachable for >5 minutes.
     - alert: InstanceDown
       expr: up == 0

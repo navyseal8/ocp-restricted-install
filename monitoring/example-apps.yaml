@@ -21,7 +21,7 @@ spec:
         app: prometheus-example-app
     spec:
       containers:
-      - image: ghcr.io/rhobs/prometheus-example-app:0.4.1
+      - image: ip-172-17-1-85.ap-southeast-1.compute.internal:8443/rhobs/prometheus-example-app:0.4.1
         imagePullPolicy: IfNotPresent
         name: prometheus-example-app
 ---

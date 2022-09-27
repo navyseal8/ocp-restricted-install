@@ -5,40 +5,6 @@ metadata:
   namespace: openshift-monitoring
 data:
   config.yaml: |
-    prometheusK8s:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-      volumeClaimTemplate:
-        spec:
-          storageClassName: local-storage (csi-ebs-io1)
-          resources:
-            requests:
-              storage: 40Gi
-      retention: 24h
-      retentionSize: 200GB
-    prometheusOperator:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
+    enableUserWorkload: true
     alertmanagerMain:
-      tolerations:
-      - key: "key1"
-        operator: "Equal"
-        value: "infra"
-        effect: "NoSchedule"
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    kubeStateMetrics:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    telemeterClient:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    k8sPrometheusAdapter:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    openshiftStateMetrics:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
-    thanosQuerier:
-      nodeSelector:
-        nodename: role-kubernetes.io/infra
+      enableUserAlertmanagerConfig: true

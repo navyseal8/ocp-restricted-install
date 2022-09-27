@@ -1,7 +1,7 @@
-apiVersion: monitoring.coreos.com/v1beta1
+apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
-  name: example-routing
+  name: mas-routing
   namespace: ns2
 spec:
   route:
@@ -12,28 +12,15 @@ spec:
     route:
     - receiver: 'aws-ses'
       matchers:
-      - alertname = 'ns2AppsCount'
-    - receiver: 'aws-sns'
-      matchers:
-      - severity = 'warning'
+      - app = 'prometheus-example-app'
   receivers:
     - name: 'null'
-    - name: 'aws-sns'
-      sns_configs:
-      - topic_arn: arn:aws:sns:ap-southeast-1:xxxxxx:xxxxxx-mas
-        sigv4:
-          region: ap-southeast-1
-        attributes:
-          key: severity
-          value: SEV2
     - name: 'aws-ses'
       email_configs:
-      - to: "xxxx@example.com"
-        from: "xxxx@example.com"
+      - to: "xxxx@xxx.sg"
+        from: "xxxx@xxx.sg"
         smarthost: "email-smtp.ap-southeast-1.amazonaws.com:587"
-        auth_username: "xxxxx"
-        auth_password: "xxxxx"
-        authIdentity: "xxxx@example.com"
-        send_resolved: true
+        auth_username: "xxxx"
+        auth_password: "xxxx"
+        authIdentity: "xxxxx@xxx.sg"
         require_tls: true
-        severity: warning

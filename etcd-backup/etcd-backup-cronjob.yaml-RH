@@ -73,7 +73,7 @@ spec:
           securityContext: {}
           containers:
             - name: cronjob-etcd-backup
-              image: registry.redhat.io/openshift4/ose-cli
+              image: ip-172-17-1-85.ap-southeast-1.compute.internal:8443/openshift4/ose-cli:latest
               terminationMessagePath: /dev/termination-log
               command:
               - /bin/bash
@@ -81,7 +81,8 @@ spec:
               - >-
                 echo -e '\n\n---\nCreate etcd backup local to master\n' &&
                 chroot /host /usr/local/bin/cluster-backup.sh /home/core/backup/$(date "+%F_%H%M%S") &&
-                echo -e '\n\n---\nCleanup old local etcd backups\n'
+                echo -e '\n\n---\nCleanup old local etcd backups\n' &&
+                chroot /host find /home/core/backup/ -type d -mmin +"2" -exec rm -rf {} +
               securityContext:
                 privileged: true
                 runAsUser: 0
@@ -94,7 +95,7 @@ spec:
                   mountPath: /host
               terminationMessagePolicy: File
             - name: aws-cli
-              image: docker.io/amazon/aws-cli:latest
+              image: ip-172-17-1-85.ap-southeast-1.compute.internal:8443/amazon/aws-cli:latest
               command:
               - /bin/bash
               - '-c'
@@ -109,13 +110,15 @@ spec:
               - name: AWS_ROLE_SESSION_NAME
                 value: manual-sts
               - name: AWS_REGION
-                value: ap-southeast-2
+                value: ap-southeast-1
               volumeMounts:
               - mountPath: /var/run/secrets/cloud
                 name: manual-sts
               - mountPath: /var/run/secrets/openshift/serviceaccount
                 name: aws-iam-token
                 readOnly: true
+              - name: host
+                mountPath: /host
           volumes:
           - name: manual-sts
             secret:
